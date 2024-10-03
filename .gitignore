@@ -1,2 +1,3 @@
 bovespa/*.csv
 venv/
+*.pyc

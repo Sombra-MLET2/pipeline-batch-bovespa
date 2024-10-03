@@ -1,13 +1,18 @@
 import logging
 import os
 from selenium import webdriver
+from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
 import time
+
+from pipeline_util import process_csv_files
 
 
 DELAY_DOWNLOAD = 5
+DELAY_SELECT = 3
+DELAY_END = 2
+
 DOWNLOAD_DIR = dir_path = os.path.dirname(os.path.realpath(__name__)) + "/bovespa"
 
 
@@ -30,11 +35,20 @@ try:
     
     time.sleep(DELAY_DOWNLOAD)
 
+    consulta_por = Select(driver.find_element(By.ID, "segment"))
+    consulta_por.select_by_value("2")
+
+    time.sleep(DELAY_SELECT)
+
     logging.info("Clicking download button.")
     download_link = driver.find_element(By.LINK_TEXT, "Download")
     download_link.click()
     
-    time.sleep(10)
+    time.sleep(DELAY_END)
+    
+    logging.info("Formatting date field")
+    process_csv_files(DOWNLOAD_DIR)
+
     logging.info("The end =)")
 
 finally:
