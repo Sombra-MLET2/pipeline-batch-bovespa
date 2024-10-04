@@ -1,0 +1,41 @@
+{
+  "name" : "sombra-bovespa_glue-job",
+  "jobMode" : "VISUAL",
+  "description" : "",
+  "role" : "arn:aws:iam::999675106166:role/LabRole",
+  "executionProperty" : {
+    "maxConcurrentRuns" : 1
+  },
+  "command" : {
+    "name" : "glueetl",
+    "scriptLocation" : "s3://myglueassets/scripts/sombra-bovespa_glue-job.py",
+    "pythonVersion" : "3"
+  },
+  "defaultArguments" : {
+    "--enable-metrics" : "true",
+    "--enable-spark-ui" : "true",
+    "--spark-event-logs-path" : "s3://myglueassets/sparkHistoryLogs/",
+    "--enable-job-insights" : "false",
+    "--enable-observability-metrics" : "true",
+    "--enable-glue-datacatalog" : "true",
+    "--enable-continuous-cloudwatch-log" : "true",
+    "--job-bookmark-option" : "job-bookmark-disable",
+    "--job-language" : "python",
+    "--TempDir" : "s3://myglueassets/temporary/"
+  },
+  "maxRetries" : 0,
+  "allocatedCapacity" : 2,
+  "timeout" : 2880,
+  "maxCapacity" : 2.0,
+  "glueVersion" : "4.0",
+  "numberOfWorkers" : 2,
+  "workerType" : "G.1X",
+  "executionClass" : "STANDARD",
+  "codeGenConfigurationNodes" : "{\"node-1727985015894\":{\"RenameField\":{\"Inputs\":[\"node-1727983614157\"],\"Name\":\"Rename Field\",\"SourcePath\":[\"sum(qtde_teorica)\"],\"TargetPath\":[\"montante_total_tipo\"]}},\"node-1727983614157\":{\"Aggregate\":{\"Aggs\":[{\"AggFunc\":\"sum\",\"Column\":[\"qtde_teorica\"]},{\"AggFunc\":\"count\",\"Column\":[\"acao\"]}],\"Groups\":[[\"tipo\"],[\"date\"]],\"Inputs\":[\"node-1727983245274\"],\"Name\":\"Aggregate\"}},\"node-1727985163166\":{\"RenameField\":{\"Inputs\":[\"node-1727985015894\"],\"Name\":\"Rename Field\",\"SourcePath\":[\"count(acao)\"],\"TargetPath\":[\"acoes_total_tipo\"]}},\"node-1727703112621\":{\"S3CsvSource\":{\"AdditionalOptions\":{\"EnableSamplePath\":true,\"SamplePath\":\"s3://fiap-etl-42/raw/IBOVDia_03-10-24.csv\"},\"Escaper\":\"\",\"Exclusions\":[],\"Name\":\"Amazon S3\",\"OptimizePerformance\":false,\"OutputSchemas\":[{\"Columns\":[{\"Name\":\"date\",\"Type\":\"string\"},{\"Name\":\"setor\",\"Type\":\"string\"},{\"Name\":\"codigo\",\"Type\":\"string\"},{\"Name\":\"acao\",\"Type\":\"string\"},{\"Name\":\"tipo\",\"Type\":\"string\"},{\"Name\":\"qtde_teorica\",\"Type\":\"string\"},{\"Name\":\"part\",\"Type\":\"string\"},{\"Name\":\"part_acum\",\"Type\":\"string\"},{\"Name\":\"col8\",\"Type\":\"string\"}]}],\"Paths\":[\"s3://fiap-etl-42/raw/\"],\"QuoteChar\":\"disabled\",\"Recurse\":true,\"Separator\":\"semicolon\",\"WithHeader\":true}},\"node-1727983203047\":{\"DropFields\":{\"Inputs\":[\"node-1727703112621\"],\"Name\":\"Drop Empty Column\",\"Paths\":[[\"col8\"]]}},\"node-1727983245274\":{\"DropDuplicates\":{\"Columns\":[[\"date\"],[\"codigo\"],[\"acao\"]],\"Inputs\":[\"node-1727983203047\"],\"Name\":\"Drop Duplicates\"}},\"node-1727985279306\":{\"S3GlueParquetTarget\":{\"AutoDataQuality\":{\"IsEnabled\":false},\"Compression\":\"snappy\",\"Inputs\":[\"node-1727985163166\"],\"Name\":\"Amazon S3\",\"PartitionKeys\":[[\"date\"]],\"Path\":\"s3://fiap-etl-42/refined/\",\"SchemaChangePolicy\":{\"Database\":\"fiap\",\"EnableUpdateCatalog\":true,\"Table\":\"bovespa_ETL_glue\",\"UpdateBehavior\":\"UPDATE_IN_DATABASE\"}}}}",
+  "sourceControlDetails" : {
+    "provider" : "GITHUB",
+    "repository" : "pipeline-batch-bovespa",
+    "branch" : "master",
+    "folder" : "glue-job"
+  }
+}
