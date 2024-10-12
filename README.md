@@ -9,7 +9,7 @@ The following steps were developed:
 1. Scraping the B3 website to gathertrading data with Python and Selenium Webdriver
 2. Raw data are then ingested into an S3 bucket configured with PUT event trigger targetting a Lambda Function
 3. The Lambda function initiates the Bovespa Batch job in AWS Glue
-4. Glue Job handle all the transformation, partitioning and load into S3 bucket
+4. Glue Job handles all the transformation, partitioning and load into S3 bucket
 5. Querying is enabled by Athena integration via Glue Data Catalog tables
 
 ## Proposed Workflow
